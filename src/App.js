@@ -1,23 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import "./App.css";
 
 function App() {
+  const [location, setLocation] = useState({ latitude: null, longitude: null });
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      const watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+          setError(null);
+        },
+        (err) => {
+          setError(err.message);
+        }
+      );
+
+      // Cleanup the watchPosition on component unmount
+      return () => navigator.geolocation.clearWatch(watchId);
+    } else {
+      setError("Geolocation is not supported by this browser.");
+    }
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+    <div>
+      <h1>Get Geolocation</h1>
+      {error && <p>Error: {error}</p>}
+      {location.latitude && location.longitude ? (
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Latitude: {location.latitude} <br />
+          Longitude: {location.longitude}
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      ) : (
+        <p>Loading...</p>
+      )}
     </div>
   );
 }
