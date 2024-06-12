@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
 import NavBar from "./componant/NavBar";
 import cloudy from "../src/assets/cloudy.jpg";
-import rainy from "../src/assets/rainy.jpg";
-import sunny from "../src/assets/sunny.jpg";
-import windy from "../src/assets/windy.jpg";
+// import rainy from "../src/assets/rainy.jpg";
+// import sunny from "../src/assets/sunny.jpg";
+// import windy from "../src/assets/windy.jpg";
 import "./App.css";
 
 function App() {
