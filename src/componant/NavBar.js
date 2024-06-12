@@ -30,3 +30,4 @@ function NavBar({ toggleDarkMode, darkMode }) {
 }
 
 export default NavBar;
+
