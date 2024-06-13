@@ -32,9 +32,7 @@ function App() {
         `https://api.openweathermap.org/data/2.5/weather?appid=f00c38e0279b7bc85480c3fe775d518c&q=${city}`
       );
       setWeatherData(response.data);
-      console.log(response.data);
     } catch (error) {
-      console.error(error);
       setWeatherData(null);
     } finally {
       setLoading(false);
@@ -87,16 +85,13 @@ function App() {
             ) : (
               weatherData && (
                 <div className="text-center justify-center flex-col">
-                  <div className="font-bold backdrop-blur p-5 rounded-lg border inline-block text-lg">
-                    {kelvinToCelsius(weatherData.main.temp)}°C
+                  <div className="backdrop-blur-lg p-4 m-2 rounded-2xl border inline-block text-5xl ">
+                    <p className="text-base"> {weatherData.name}{", "} {weatherData.sys.country}  </p>
+                    <p className="font-bold p-2">{kelvinToCelsius(weatherData.main.temp)}°</p>
+                    <p className="text-sm">Min {kelvinToCelsius(weatherData.main.temp_min)}° {" / "} Max {kelvinToCelsius(weatherData.main.temp_max)}°</p>
+                    <p className="text-sm"> {weatherData.weather[0].main}{" / "}{kelvinToCelsius(weatherData.main.feels_like)}° {" - "} {weatherData.weather[0].description}  </p>
+                    <p className="text-sm"> Humidity {": "} {weatherData.main.humidity} {" , "} Pressure {": "} {weatherData.main.pressure}  </p>
                   </div>
-                  <p>City Name: {weatherData.name}</p>
-                  <p>Temperature: {kelvinToCelsius(weatherData.main.temp)}°C</p>
-                  <p>
-                    Feels like Temperature:{" "}
-                    {kelvinToCelsius(weatherData.main.feels_like)}°C
-                  </p>
-                  <p>Weather: {weatherData.weather[0].description}</p>
                 </div>
               )
             )}
