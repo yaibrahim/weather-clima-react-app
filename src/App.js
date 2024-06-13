@@ -5,11 +5,15 @@ import cloudy from "../src/assets/cloudy.jpg";
 import rainy from "../src/assets/rainy.jpg";
 import sunny from "../src/assets/sunny.jpg";
 import windy from "../src/assets/windy.jpg";
+import haze from "../src/assets/haze.jpg";
+import dust from "../src/assets/dust.jpg";
+import defaultImage from "../src/assets/default.jpg";
 import "./App.css";
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [weatherData, setWeatherData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -22,6 +26,7 @@ function App() {
   }, [searchTerm]);
 
   async function getUser(city) {
+    setLoading(true);
     try {
       const response = await axios.get(
         `https://api.openweathermap.org/data/2.5/weather?appid=f00c38e0279b7bc85480c3fe775d518c&q=${city}`
@@ -31,6 +36,8 @@ function App() {
     } catch (error) {
       console.error(error);
       setWeatherData(null);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -43,51 +50,60 @@ function App() {
       return sunny;
     } else if (weather.includes("wind")) {
       return windy;
-    } else {
-      return cloudy;
+    } else if (weather.includes("haze")) {
+      return haze;
+    } else if (weather.includes("dust")) {
+      return dust;
+    }else {
+      return defaultImage;
     }
   };
 
-  const backgroundImage = weatherData
-    ? getBackgroundImage(weatherData.weather[0].description.toLowerCase())
-    : cloudy;
-
   const kelvinToCelsius = (kelvin) => (kelvin - 273.15).toFixed(2);
 
+  const backgroundImage = weatherData
+    ? getBackgroundImage(weatherData.weather[0].description.toLowerCase())
+    : defaultImage;
+
   return (
-    <>
+    <div>
       <NavBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
-      <div className="flex flex-1">
-        <main className="w-full" >
-          <div
-            className="main-container  bg-cover bg-center"
-            style={{
-              backgroundImage: `url(${backgroundImage})`,
-            }}
-          >
-            <h2 className="text-3xl text-center text-gray-900 p-10">
-              Today's Weather
-            </h2>
+      <main className="flex-1">
+        <div
+          className="main-container"
+          style={{
+            backgroundImage: `url(${backgroundImage})`,
+          }}
+        >
+          <div className="content text-white flex-col">
+            <h2 className="text-3xl text-center p-10 font-bold">Today's Weather</h2>
             {searchTerm && (
-              <p className="text-xl text-center text-gray-900">
-                Search term: {searchTerm}
-              </p>
+              <p className="text-xl text-center">Search term: {searchTerm}</p>
             )}
-            {weatherData && (
-              <div className="text-center text-gray-900">
-                <p>City Name: {weatherData.name}</p>
-                <p>Temperature: {kelvinToCelsius(weatherData.main.temp)}°C</p>
-                <p>
-                  Feels like Temperature:{" "}
-                  {kelvinToCelsius(weatherData.main.feels_like)}°C
-                </p>
-                <p>Weather: {weatherData.weather[0].description}</p>
+            {loading ? (
+              <div className="text-center">
+                <p>Searching...</p>
               </div>
+            ) : (
+              weatherData && (
+                <div className="text-center justify-center flex-col">
+                  <div className="font-bold backdrop-blur p-5 rounded-lg border inline-block text-lg">
+                    {kelvinToCelsius(weatherData.main.temp)}°C
+                  </div>
+                  <p>City Name: {weatherData.name}</p>
+                  <p>Temperature: {kelvinToCelsius(weatherData.main.temp)}°C</p>
+                  <p>
+                    Feels like Temperature:{" "}
+                    {kelvinToCelsius(weatherData.main.feels_like)}°C
+                  </p>
+                  <p>Weather: {weatherData.weather[0].description}</p>
+                </div>
+              )
             )}
           </div>
-        </main>
-      </div>
-    </>
+        </div>
+      </main>
+    </div>
   );
 }
 

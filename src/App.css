@@ -46,7 +46,21 @@
   background-repeat: no-repeat;
 }
 
-.weather-content {
-  flex: 1;
-  overflow-y: auto;
+.main-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: inherit;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(3px);
+  z-index: -1;
+}
+
+.content {
+  position: relative;
 }
