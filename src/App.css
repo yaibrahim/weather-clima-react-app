@@ -36,3 +36,17 @@
     transform: rotate(360deg);
   }
 }
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 74px);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.weather-content {
+  flex: 1;
+  overflow-y: auto;
+}

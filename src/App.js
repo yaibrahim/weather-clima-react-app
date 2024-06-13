@@ -8,7 +8,7 @@ import windy from "../src/assets/windy.jpg";
 import "./App.css";
 
 function App() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [weatherData, setWeatherData] = useState(null);
 
   const handleSearchChange = (event) => {
@@ -23,11 +23,14 @@ function App() {
 
   async function getUser(city) {
     try {
-      const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?appid=f00c38e0279b7bc85480c3fe775d518c&q=${city}`);
+      const response = await axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?appid=f00c38e0279b7bc85480c3fe775d518c&q=${city}`
+      );
       setWeatherData(response.data);
       console.log(response.data);
     } catch (error) {
       console.error(error);
+      setWeatherData(null);
     }
   }
 
@@ -45,35 +48,44 @@ function App() {
     }
   };
 
-  const backgroundImage = weatherData ? getBackgroundImage(weatherData.weather[0].description.toLowerCase()) : cloudy;
+  const backgroundImage = weatherData
+    ? getBackgroundImage(weatherData.weather[0].description.toLowerCase())
+    : cloudy;
 
   const kelvinToCelsius = (kelvin) => (kelvin - 273.15).toFixed(2);
 
   return (
     <>
       <NavBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
-      <div
-        style={{
-          backgroundImage: `url(${backgroundImage})`,
-          backgroundSize: "cover",
-          height: "100vh",
-          width: "100vw",
-        }}
-      >
-        <h2 className="text-3xl text-center text-gray-900 p-10">Today's Weather</h2>
-        {searchTerm && (
-          <p className="text-xl text-center text-gray-900">
-            Search term: {searchTerm}
-          </p>
-        )}
-        {weatherData && (
-          <div className="text-center text-gray-900">
-            <p>City Name: {weatherData.name}</p>
-            <p>Temperature: {kelvinToCelsius(weatherData.main.temp)}°C</p>
-            <p>Feels like Temperature: {kelvinToCelsius(weatherData.main.feels_like)}°C</p>
-            <p>Weather: {weatherData.weather[0].description}</p>
+      <div className="flex flex-1">
+        <main className="w-full" >
+          <div
+            className="main-container  bg-cover bg-center"
+            style={{
+              backgroundImage: `url(${backgroundImage})`,
+            }}
+          >
+            <h2 className="text-3xl text-center text-gray-900 p-10">
+              Today's Weather
+            </h2>
+            {searchTerm && (
+              <p className="text-xl text-center text-gray-900">
+                Search term: {searchTerm}
+              </p>
+            )}
+            {weatherData && (
+              <div className="text-center text-gray-900">
+                <p>City Name: {weatherData.name}</p>
+                <p>Temperature: {kelvinToCelsius(weatherData.main.temp)}°C</p>
+                <p>
+                  Feels like Temperature:{" "}
+                  {kelvinToCelsius(weatherData.main.feels_like)}°C
+                </p>
+                <p>Weather: {weatherData.weather[0].description}</p>
+              </div>
+            )}
           </div>
-        )}
+        </main>
       </div>
     </>
   );
