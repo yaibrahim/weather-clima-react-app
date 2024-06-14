@@ -130,7 +130,7 @@ function App() {
         >
           <div className="content text-white flex-col">
             <h2 className="text-3xl text-center p-10 font-bold">Today's Weather</h2>
-            {loading ? (
+            {loading && dataToShow ? (
               <div className="text-center">
                 <p>Loading...</p>
               </div>
