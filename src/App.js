@@ -17,6 +17,7 @@ function App() {
   const [location, setLocation] = useState({ latitude: null, longitude: null });
   const [locationWeatherData, setLocationWeatherData] = useState(null);
   const [error, setError] = useState(null);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -41,17 +42,27 @@ function App() {
     }
   }, []);
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]);
 
   useEffect(() => {
-    if (searchTerm) {
-      getUser(searchTerm);
+    if (debouncedSearchTerm) {
+      getUser(debouncedSearchTerm);
     } else if (location.latitude && location.longitude) {
       getWeatherByLocation(location.latitude, location.longitude);
     }
-  }, [searchTerm, location]);
+  }, [debouncedSearchTerm, location]);
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
 
   async function getUser(city) {
     setLoading(true);
